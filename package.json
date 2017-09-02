@@ -1,0 +1,19 @@
+{
+  "name": "damsel",
+  "version": "1.0.0",
+  "description": "A HTML5 game about a princess who saves her kingdom.",
+  "main": "App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rmcavin/Damsel.git"
+  },
+  "author": "Rachel Cavin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rmcavin/Damsel/issues"
+  },
+  "homepage": "https://github.com/Rmcavin/Damsel#readme"
+}

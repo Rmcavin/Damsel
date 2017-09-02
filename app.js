@@ -1,15 +1,14 @@
-//import all game states
-const titleScreen = require('./TitleScreen.js');
-console.log(titleScreen);
-
 //start canvas!
 startCanvas();
 
 function startCanvas() {
 
-  //grab the element and set the context
+  //grab canvas and set context as 2d
   let canvas = document.getElementById('canvas');
   let ctx = canvas.getContext('2d');
+
+  let next = 0;
+  let current = 0;
 
   //Set the game states
   const GAME_STATE_TITLE = 0;
@@ -55,48 +54,112 @@ function startCanvas() {
     e.preventDefault();
     }
     keysDown[e.keyCode] = true;
-    console.log(keysDown);
   }, false);
 
   addEventListener('keyup', function(e) {
     delete keysDown[e.keyCode];
   }, false);
 
-  //Start New Game
-  function gameStateNewGame(){
-    console.log(`${currentGameState}`);
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'blue';
-    ctx.fillRect(0,0,800,500);
-    if (13 in keysDown) {
-      switchGameState(GAME_STATE_PLAY_LEVEL);
+  let update = function(input) {
+  if (38 in keysDown) { //UP
+    hero.y -= hero.speed*input;
+    heroImage.src = backward;
+  }
+  if (40 in keysDown) { //DOWN
+    hero.y += hero.speed*input;
+    heroImage.src = forward;
+  }
+  if (37 in keysDown) { //LEFT
+    hero.x -= hero.speed*input;
+    heroImage.src = left;
+  }
+  if (39 in keysDown) { //RIGHT
+    hero.x += hero.speed*input;
+    heroImage.src = right;
+  }
+    }
+
+
+  function gameStateTitle() {
+    console.log('title');
+  }
+
+  function gameStateNewGame() {
+    console.log('new game');
+  }
+
+  function gameStatePlayLevel() {
+
+  }
+
+  function gameStateGameOver() {
+    console.log('game over');
+  }
+
+  let heroReady = false;
+  let heroImage = new Image();
+  heroImage.onload = function() {
+    heroReady = true;
+  }
+
+  let forward = 'assets/Hero_Forward.png';
+  let backward = 'assets/Hero_Backward.png'
+  let left = 'assets/Hero_Left.png';
+  let right = 'assets/Hero_Right.png';
+  heroImage.src = forward;
+
+  let hero = {
+    speed: 120,
+    x: 0,
+    y: 0
+  };
+
+  let gameRender = function() {
+    if (heroReady) {
+      let heroW = 64
+      let heroH = 64;
+      let totalFrames = 9;
+
+      ctx.clearRect(0,0,800,500);
+      ctx.drawImage(heroImage,next,0,heroW,heroH,hero.x,hero.y,heroW,heroH);
+
+      if (38 in keysDown || 40 in keysDown || 37 in keysDown || 39 in keysDown) {
+        next += heroW;
+      }
+
+      if (current == totalFrames) {
+        next = 0;
+        current = 0;
+      }
+      current++;
     }
   }
-  //Play Level State
-  function gameStatePlayLevel() {
-    console.log(`${currentGameState}`);
+
+  let main = function() {
+    let now = Date.now();
+    let delta = now - then;
+    update(delta/1000);
+    gameRender();
+
+    then = now;
+
+  //do again asap
+  let w = window;
+  let fps = 20;
+
+    function draw() {
+
+        setTimeout(function() {
+          requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
+          requestAnimationFrame(main);
+        }, 1000/fps)
+
+    }
+draw();
+
   }
 
-  //Game Over State
-  function gameStateGameOver() {
-    console.log(`${currentGameState}`);
-  }
+  let then = Date.now();
+  main();
 
-  //Run the game
-  function runGame() {
-    currentGameStateFunction();
-  }
-
-  //******APPLICATION START*******
-  switchGameState(GAME_STATE_TITLE);
-
-  //application loop
-  let FRAME_RATE = 40;
-  let intervalTime = 1000/FRAME_RATE;
-  gameLoop();
-
-  function gameLoop() {
-    runGame();
-    window.setTimeout(gameLoop, intervalTime)
-  }
 }
