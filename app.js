@@ -204,7 +204,7 @@ function startCanvas() {
           break;
       }
       sound.load();
-      //sound.play();
+      sound.play();
     }
   }
 
