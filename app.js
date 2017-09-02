@@ -2,23 +2,25 @@
 startCanvas();
 
 function startCanvas() {
-
+  let sound = document.getElementById('audio')
+  sound.src = 'assets/title.mp3'
+  console.log(sound.src);
   //grab canvas and set context as 2d
   let canvas = document.getElementById('canvas');
   let ctx = canvas.getContext('2d');
+
+  //set the current game state
+  let currentGameState = 0;
+  let currentGameStateFunction = null;
+  let musicState = currentGameState;
 
   let next = 0;
   let current = 0;
 
   //Set the game states
   const GAME_STATE_TITLE = 0;
-  const GAME_STATE_NEW_GAME = 1;
-  const GAME_STATE_PLAY_LEVEL = 2;
-  const GAME_STATE_GAME_OVER = 3;
-
-  //set the current game state
-  let currentGameState = 0;
-  let currentGameStateFunction = null;
+  const GAME_STATE_PLAY_LEVEL = 1;
+  const GAME_STATE_GAME_OVER = 2;
 
   //enable switching game states
   function switchGameState(newState) {
@@ -27,10 +29,6 @@ function startCanvas() {
 
       case GAME_STATE_TITLE:
         currentGameStateFunction = gameStateTitle;
-        break;
-
-      case GAME_STATE_NEW_GAME:
-        currentGameStateFunction = gameStateNewGame;
         break;
 
       case GAME_STATE_PLAY_LEVEL:
@@ -61,41 +59,92 @@ function startCanvas() {
   }, false);
 
   let update = function(input) {
-  if (38 in keysDown) { //UP
-    hero.y -= hero.speed*input;
-    heroImage.src = backward;
-  }
-  if (40 in keysDown) { //DOWN
-    hero.y += hero.speed*input;
-    heroImage.src = forward;
-  }
-  if (37 in keysDown) { //LEFT
-    hero.x -= hero.speed*input;
-    heroImage.src = left;
-  }
-  if (39 in keysDown) { //RIGHT
-    hero.x += hero.speed*input;
-    heroImage.src = right;
-  }
+    if (38 in keysDown) { //UP
+      hero.y -= hero.speed*input;
+      heroImage.src = backward;
     }
-
+    if (40 in keysDown) { //DOWN
+      hero.y += hero.speed*input;
+      heroImage.src = forward;
+    }
+    if (37 in keysDown) { //LEFT
+      hero.x -= hero.speed*input;
+      heroImage.src = left;
+    }
+    if (39 in keysDown) { //RIGHT
+      hero.x += hero.speed*input;
+      heroImage.src = right;
+    }
+  }
 
   function gameStateTitle() {
-    console.log('title');
-  }
-
-  function gameStateNewGame() {
-    console.log('new game');
+    console.log(currentGameState);
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0,0,832,512);
+    ctx.fillStyle = '#FFE4E1';
+    ctx.font = '96px Dancing Script';
+    ctx.textBaseline = 'top';
+    ctx.textAlign="center";
+    ctx.fillText('Damsel', 405, 162);
+    ctx.textBaseline = 'middle';
+    ctx.font = '36px Dancing Script';
+    ctx.fillText('Press Space to Start', 405, 362);
+    //advance to new game state when space is pressed
+    if (32 in keysDown) {
+      ctx.clearRect(0,0,832,512);
+      switchGameState(GAME_STATE_PLAY_LEVEL);
+    }
   }
 
   function gameStatePlayLevel() {
-
+    console.log(currentGameState);
+    gameRender();
   }
 
   function gameStateGameOver() {
-    console.log('game over');
+    console.log(currentGameState);
   }
 
+  let tileSize = 32;
+  let MapRenderer = {};
+
+  MapRenderer.draw = function() {
+    let self = this;
+    this.context.clearRect(0,0,this.w,this.h);
+    this.context.fillStyle = 'black';
+    (this.map).each(function(row,i) {
+      (row).each(function(tile,j) {
+        if (tile !== '0') {
+          self.drawTile(j,i);
+        }
+      });
+    });
+  }
+  MapRenderer.drawTile = function(x,y) {
+    this.context.fillRect(
+      x * this.tileSize, y *this.tileSize, this.tileSize, this.tileSize);
+  }
+
+  let gameRender = function() {
+    if (heroReady) {
+      let heroW = 64
+      let heroH = 64;
+      let totalFrames = 9;
+
+      ctx.clearRect(0,0,832,512);
+      ctx.drawImage(heroImage,next,0,heroW,heroH,hero.x,hero.y,heroW,heroH);
+
+      if (38 in keysDown || 40 in keysDown || 37 in keysDown || 39 in keysDown) {
+        next += heroW;
+      }
+
+      if (current == totalFrames) {
+        next = 0;
+        current = 0;
+      }
+      current++;
+    }
+  }
   let heroReady = false;
   let heroImage = new Image();
   heroImage.onload = function() {
@@ -110,56 +159,77 @@ function startCanvas() {
 
   let hero = {
     speed: 120,
-    x: 0,
-    y: 0
+    x: (canvas.width/2)-32,
+    y: (canvas.height/3.5)-32
   };
 
-  let gameRender = function() {
-    if (heroReady) {
-      let heroW = 64
-      let heroH = 64;
-      let totalFrames = 9;
+  let map = [
+    ['0','0','w','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','w','0','0'],
+    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','w','w','w','w','w','0','0','0','0','w','w','w','w','w','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','s','s','s','s','s','0','0','0','0','s','s','s','s','s','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','s','s','s','s','s','0','0','0','0','s','s','s','s','s','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','s','s','s','s','s','0','0','0','0','s','s','s','s','s','0','0','0','0','0','0','0','w','0','0'],
+    ['0','0','s','s','s','s','s','0','0','0','0','s','s','s','s','s','0','0','0','0','0','0','0','w','g','g']
+  ]
 
-      ctx.clearRect(0,0,800,500);
-      ctx.drawImage(heroImage,next,0,heroW,heroH,hero.x,hero.y,heroW,heroH);
+  function runGameState() {
+    currentGameStateFunction();
+  }
 
-      if (38 in keysDown || 40 in keysDown || 37 in keysDown || 39 in keysDown) {
-        next += heroW;
+  function musicChange() {
+    if (musicState !== currentGameState) {
+      musicState = currentGameState;
+      switch (musicState) {
+
+        case 0:
+          sound.src = 'assets/Title.mp3';
+          break;
+
+        case 1:
+          sound.src = 'assets/MainGame.mp3';
+          break;
+
+        case GAME_STATE_GAME_OVER:
+          console.log('no music yet');
+          break;
       }
-
-      if (current == totalFrames) {
-        next = 0;
-        current = 0;
-      }
-      current++;
+      sound.load();
+      //sound.play();
     }
   }
 
   let main = function() {
+    runGameState();
+    musicChange();
     let now = Date.now();
     let delta = now - then;
     update(delta/1000);
-    gameRender();
+
 
     then = now;
 
-  //do again asap
-  let w = window;
-  let fps = 20;
-
+    //do again asap
+    let w = window;
+    let fps = 20;
     function draw() {
-
         setTimeout(function() {
           requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
           requestAnimationFrame(main);
         }, 1000/fps)
-
     }
-draw();
-
+    draw();
   }
-
+  switchGameState(GAME_STATE_TITLE);
   let then = Date.now();
   main();
-
-}
+  }

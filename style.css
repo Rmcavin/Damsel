@@ -1,3 +1,11 @@
+#topBar {
+  background-color: black;
+  color: #FFE4E1;
+  font-family: 'Dancing Script';
+  font-size: 24px;
+  padding: 10px;
+}
+
 .canvasContainer {
   margin: 50px auto 0px auto;
   text-align: center;
@@ -5,4 +13,8 @@
 
 canvas {
   border: 1px solid black;
+}
+
+.background-canvas {
+  background: url('./assets/grass.png')
 }
