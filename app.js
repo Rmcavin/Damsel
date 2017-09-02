@@ -3,7 +3,7 @@ startCanvas();
 
 function startCanvas() {
   let sound = document.getElementById('audio')
-  sound.src = 'assets/title.mp3'
+  sound.src = 'assets/Title.mp3'
   console.log(sound.src);
   //grab canvas and set context as 2d
   let canvas = document.getElementById('canvas');
