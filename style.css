@@ -1,9 +1,10 @@
 #topBar {
   background-color: black;
   color: #FFE4E1;
-  font-family: 'Dancing Script';
-  font-size: 24px;
-  padding: 10px;
+  font-family: Brush Script MT, cursive;
+  font-size: 32px;
+  padding: 5px;
+  text-indent: 15px;
 }
 
 .canvasContainer {
