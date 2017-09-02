@@ -79,16 +79,20 @@ function startCanvas() {
 
   function gameStateTitle() {
     console.log(currentGameState);
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0,0,832,512);
-    ctx.fillStyle = '#FFE4E1';
-    ctx.font = '96px Dancing Script';
+    canvas.style.background = "url('assets/background_intro.png')";
+
     ctx.textBaseline = 'top';
-    ctx.textAlign="center";
-    ctx.fillText('Damsel', 405, 162);
-    ctx.textBaseline = 'middle';
-    ctx.font = '36px Dancing Script';
+    ctx.textAlign = "center";
+    ctx.fillStyle = '#FFE4E1';
+
+    //Title font
+    ctx.font = '96px Brush Script Std, Brush Script MT, cursive';
+    ctx.fillText('Damsel', 405, 180);
+
+    //Press start font
+    ctx.font = '36px Brush Script Std, cursive';
     ctx.fillText('Press Space to Start', 405, 362);
+
     //advance to new game state when space is pressed
     if (32 in keysDown) {
       ctx.clearRect(0,0,832,512);
@@ -98,6 +102,7 @@ function startCanvas() {
 
   function gameStatePlayLevel() {
     console.log(currentGameState);
+    canvas.style.background = "url('assets/grass.png')";
     gameRender();
   }
 

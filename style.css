@@ -13,8 +13,6 @@
 
 canvas {
   border: 1px solid black;
-}
-
-.background-canvas {
-  background: url('assets/grass.png') 
+  background: url('assets/grass.png');
+  background-position: center;
 }
