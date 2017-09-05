@@ -4,7 +4,6 @@ startCanvas();
 function startCanvas() {
   let sound = document.getElementById('audio')
   sound.src = 'assets/Title.mp3'
-  console.log(sound.src);
   //grab canvas and set context as 2d
   let canvas = document.getElementById('canvas');
   let ctx = canvas.getContext('2d');
@@ -78,7 +77,6 @@ function startCanvas() {
   }
 
   function gameStateTitle() {
-    console.log(currentGameState);
     canvas.style.background = "url('assets/background_intro.png')";
 
     ctx.textBaseline = 'top';
@@ -101,55 +99,67 @@ function startCanvas() {
   }
 
   function gameStatePlayLevel() {
-    console.log(currentGameState);
     canvas.style.background = "url('assets/grass.png')";
-    gameRender();
+    mapRender();
+    heroRender();
   }
 
   function gameStateGameOver() {
     console.log(currentGameState);
   }
 
-  let tileSize = 32;
-  let MapRenderer = {};
+  let map = {
+      cols: 28,
+      rows: 17,
+      tileSize: 32,
+      tiles: [
+      0,0,0,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,5,5,0,0,0,
+      0,0,0,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,5,5,0,0,0,
+      0,0,0,5,5,1,2,1,3,1,2,3,0,8,7,0,1,1,1,2,1,3,1,5,5,0,0,0,
+      0,0,0,5,5,1,0,0,0,0,0,0,0,7,8,0,0,0,0,0,0,0,2,5,5,0,0,0,
+      0,0,0,5,5,3,0,0,0,0,0,0,0,8,7,0,0,0,0,0,0,0,1,5,5,0,0,0,
+      0,0,0,5,5,1,0,0,0,0,0,0,0,7,8,0,0,0,0,0,0,0,1,5,5,0,0,0,
+      0,0,0,5,5,1,0,0,0,0,0,0,0,8,7,0,0,0,0,0,0,0,1,5,5,0,0,0,
+      0,0,0,5,5,1,0,0,0,0,0,0,0,7,8,0,0,0,0,0,0,0,3,5,5,0,0,0,
+      0,0,0,5,5,2,0,0,0,0,0,0,0,8,7,0,0,0,0,0,0,0,2,5,5,0,0,0,
+      0,0,0,5,5,1,0,0,0,0,0,0,0,7,8,0,0,0,0,0,0,0,3,5,5,0,0,0,
+      0,0,0,5,5,1,0,0,0,0,0,0,0,8,7,0,0,0,0,0,0,0,1,5,5,0,0,0,
+      0,0,0,5,5,1,0,0,0,0,0,0,0,7,8,0,0,0,0,0,0,0,1,5,5,0,0,0,
+      0,0,0,5,5,3,0,0,0,0,0,0,0,8,7,0,0,0,0,0,0,0,3,5,5,0,0,0,
+      0,0,0,5,5,5,5,5,0,0,0,0,0,7,0,0,0,0,0,0,5,5,5,5,5,0,0,0,
+      0,0,0,6,6,6,6,6,0,0,0,0,0,8,0,0,0,0,0,0,6,6,6,6,6,0,0,0,
+      0,0,0,6,6,6,6,6,0,0,0,0,0,0,8,0,0,0,0,0,6,6,6,6,6,0,0,0,
+      0,0,0,6,6,6,6,6,0,0,0,0,0,0,0,0,0,0,0,0,6,6,6,6,6,0,0,0
+    ],
+    getTile: function(col, row) {
+      return this.tiles[row*map.cols +col]
+    },
+    isSolidTileAtXY: function(x,y) {
+      let col = Math.floor(x/this.tileSize);
+      let row = Math.floor(y/this.tileSize);
 
-  MapRenderer.draw = function() {
-    let self = this;
-    this.context.clearRect(0,0,this.w,this.h);
-    this.context.fillStyle = 'black';
-    (this.map).each(function(row,i) {
-      (row).each(function(tile,j) {
-        if (tile !== '0') {
-          self.drawTile(j,i);
-        }
-      });
-    });
-  }
-  MapRenderer.drawTile = function(x,y) {
-    this.context.fillRect(
-      x * this.tileSize, y *this.tileSize, this.tileSize, this.tileSize);
-  }
+      //4,5,6 are solid/not walkable
 
-  let gameRender = function() {
-    if (heroReady) {
-      let heroW = 64
-      let heroH = 64;
-      let totalFrames = 9;
-
-      ctx.clearRect(0,0,832,512);
-      ctx.drawImage(heroImage,next,0,heroW,heroH,hero.x,hero.y,heroW,heroH);
-
-      if (38 in keysDown || 40 in keysDown || 37 in keysDown || 39 in keysDown) {
-        next += heroW;
-      }
-
-      if (current == totalFrames) {
-        next = 0;
-        current = 0;
-      }
-      current++;
+      return this.tiles.reduce(function(res,tile,index) {
+        let cell = this.getTile(col,row);
+        let isSolid = cell === 4 || cell === 5 || cell === 6;
+        return res || isSolid;
+      }).bind(this), false;
+    },
+    getCol: function(x) {
+      return Math.floor(x/this.tileSize);
+    },
+    getRow: function(y) {
+      return Math.floor(y/this.tileSize);
+    },
+    getX: function(col) {
+      return col * this.tileSize;
+    },
+    getY: function(row) {
+      return row * this.tileSize;
     }
-  }
+  };
+
   let heroReady = false;
   let heroImage = new Image();
   heroImage.onload = function() {
@@ -165,27 +175,61 @@ function startCanvas() {
   let hero = {
     speed: 120,
     x: (canvas.width/2)-32,
-    y: (canvas.height/3.5)-32
+    y: (canvas.height/3.5)-32,
+    width: 64,
+    height: 64
   };
 
-  let map = [
-    ['0','0','w','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','s','w','0','0'],
-    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','w','f','0','0','0','0','0','0','0','0','0','0','f','w','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','w','w','w','w','w','0','0','0','0','w','w','w','w','w','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','s','s','s','s','s','0','0','0','0','s','s','s','s','s','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','s','s','s','s','s','0','0','0','0','s','s','s','s','s','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','s','s','s','s','s','0','0','0','0','s','s','s','s','s','0','0','0','0','0','0','0','w','0','0'],
-    ['0','0','s','s','s','s','s','0','0','0','0','s','s','s','s','s','0','0','0','0','0','0','0','w','g','g']
-  ]
+  let heroRender = function() {
+    if (heroReady) {
+      let heroW = 64
+      let heroH = 64;
+      let totalFrames = 9;
+
+      //ctx.clearRect(0,0,832,512);
+      ctx.drawImage(heroImage,next,0,heroW,heroH,hero.x,hero.y,heroW,heroH);
+
+      if (38 in keysDown || 40 in keysDown || 37 in keysDown || 39 in keysDown) {
+        next += heroW;
+      }
+
+      if (current == totalFrames) {
+        next = 0;
+        current = 0;
+      }
+      current++;
+    }
+  }
+
+  let tileImg = new Image();
+  tileImg.src = 'assets/textures.png'
+  let tilesReady = false;
+  tileImg.onload = function() {
+    tilesReady = true;
+  }
+
+  function mapRender() {
+    if (tilesReady) {
+      for (var c = 0; c < map.cols; c++) {
+        for (var r = 0; r < map.rows; r++) {
+          let tile = map.getTile(c,r);
+          if (tile !== '0') {
+            ctx.drawImage(
+              tileImg, //Image
+              (tile -1) * map.tileSize, //source x
+              0, //source y
+              map.tileSize, //source width
+              map.tileSize, //source height
+              c * map.tileSize, //target x
+              r * map.tileSize, //target y
+              map.tileSize, //target width
+              map.tileSize //target height
+            );
+          }
+        }
+      }
+    }
+  }
 
   function runGameState() {
     currentGameStateFunction();
@@ -230,6 +274,7 @@ function startCanvas() {
         setTimeout(function() {
           requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
           requestAnimationFrame(main);
+          ctx.clearRect(0,0,832,512);
         }, 1000/fps)
     }
     draw();
