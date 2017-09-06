@@ -348,14 +348,14 @@ function startCanvas() {
       // }
     }
     if (key == 37) { //LEFT
-      return map.isSolidTileAtXY(left,hero.y);
+      return map.isSolidTileAtXY(left,hero.y+16);
       // if (map.isSolidTileAtXY(hero.y,left)) {
       //   hero.x -= 32;
       //   camera.x -= 32;
       // }
     }
     if (key == 39) { //RIGHT
-      return map.isSolidTileAtXY(right,hero.y);
+      return map.isSolidTileAtXY(right,hero.y+16);
       // if (map.isSolidTileAtXY(hero.y,right)) {
       //   hero.x += 32;
       //   camera.x += 32;
