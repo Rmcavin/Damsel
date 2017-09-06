@@ -57,25 +57,43 @@ function startCanvas() {
   }, false);
 
   let update = function(input) {
+    let notAble;
     if (38 in keysDown) { //UP
-      hero.y -= Math.floor((hero.speed*input));
-      camera.move(38,input);
       heroImage.src = backward;
+      notAble = checkCollision(38)
+      console.log(notAble);
+      if (!notAble) {
+        hero.y -= Math.floor((hero.speed*input));
+        camera.move(38,input);
+      }
     }
     if (40 in keysDown) { //DOWN
-      hero.y += Math.floor((hero.speed*input));
-      camera.move(40,input);
       heroImage.src = forward;
+      notAble = checkCollision(40);
+      console.log(notAble);
+      if (!notAble) {
+        hero.y += Math.floor((hero.speed*input));
+        camera.move(40,input);
+      }
     }
     if (37 in keysDown) { //LEFT
-      hero.x -= Math.floor((hero.speed*input));
-      camera.move(37,input);
       heroImage.src = left;
+      notAble = checkCollision(37);
+      console.log(notAble);
+      if (!notAble) {
+        hero.x -= Math.floor((hero.speed*input));
+        camera.move(37,input);
+      }
+
     }
     if (39 in keysDown) { //RIGHT
-      hero.x += Math.floor((hero.speed*input));
-      camera.move(39,input);
       heroImage.src = right;
+      notAble =checkCollision(39);
+      console.log(notAble);
+      if (!notAble) {
+        hero.x += Math.floor((hero.speed*input));
+        camera.move(39,input);
+      }
     }
   }
 
@@ -153,7 +171,6 @@ function startCanvas() {
 
     getTile: function(col, row) {
       //console.log(col,row);
-      // 13 , 8
       return this.tiles[row*map.cols+col]
     },
     isSolidTileAtXY: function (x,y) {
@@ -165,18 +182,18 @@ function startCanvas() {
       let isSolid = tile === 4 || tile === 5 || tile === 6;
       return isSolid;
     },
-    getCol: function(x) {
-      return Math.floor(x/this.tileSize);
-    },
-    getRow: function(y) {
-      return Math.floor(y/this.tileSize);
-    },
-    getX: function(col) {
-      return col * this.tileSize;
-    },
-    getY:function(row) {
-      return row * this.tileSize;
-    }
+    // getCol: function(x) {
+    //   return Math.floor(x/this.tileSize);
+    // },
+    // getRow: function(y) {
+    //   return Math.floor(y/this.tileSize);
+    // },
+    // getX: function(col) {
+    //   return col * this.tileSize;
+    // },
+    // getY:function(row) {
+    //   return row * this.tileSize;
+    // }
   };
 
   let heroReady = false;
@@ -198,6 +215,8 @@ function startCanvas() {
     vert: Math.floor((canvas.height/2)-32),
     x: Math.floor((26/2)*32),
     y: Math.floor((16/2)*32),
+    //col: Math.floor(hero.x/32),
+    //row: Math.floor(hero.y/32),
     width: 64,
     height: 64,
   };
@@ -245,8 +264,8 @@ function startCanvas() {
       let endCol = startCol + (camera.width/map.tileSize);
       let startRow = Math.floor(camera.y/map.tileSize);
       let endRow = startRow + (camera.height/map.tileSize);
-       let offsetX = -camera.x + startCol * map.tileSize;
-       let offsetY = -camera.y + startRow * map.tileSize;
+      let offsetX = -camera.x + startCol * map.tileSize;
+      let offsetY = -camera.y + startRow * map.tileSize;
 
       for (var c = startCol; c <= endCol; c++) {
         for (var r = startRow; r <= endRow; r++) {
@@ -271,7 +290,6 @@ function startCanvas() {
           }
         }
       }
-
     }
   }
 
@@ -296,8 +314,6 @@ function startCanvas() {
       if (key == 39) { //RIGHT
         this.x += Math.floor(camera.speed*input);
       }
-      console.log('camera x',camera.x/32);
-      console.log('camera y',camera.y/32);
 
       let col = Math.floor(hero.x/32);
       let row = Math.floor(hero.y/32);
@@ -308,10 +324,49 @@ function startCanvas() {
     }
   }
 
+  function checkCollision(key) {
+    let up = hero.y - 32;
+    let down = hero.y + 32;
+    let right = hero.x + 32;
+    let left = hero.x - 32;
+
+    //console.log(map.isSolidTileAtXY(hero.x,hero.y));
+
+    if (key == 38) { //UP
+
+      return map.isSolidTileAtXY(hero.x,up);
+      // if (map.isSolidTileAtXY(hero.x,up)) {
+        // hero.y -= 32;
+        // camera.y -= 32;
+      //}
+    }
+    if (key == 40) { //DOWN
+      return map.isSolidTileAtXY(hero.x,down);
+      // if (map.isSolidTileAtXY(hero.x,down)) {
+      //   hero.y += 32;
+      //   camera.y += 32;
+      // }
+    }
+    if (key == 37) { //LEFT
+      return map.isSolidTileAtXY(left,hero.y);
+      // if (map.isSolidTileAtXY(hero.y,left)) {
+      //   hero.x -= 32;
+      //   camera.x -= 32;
+      // }
+    }
+    if (key == 39) { //RIGHT
+      return map.isSolidTileAtXY(right,hero.y);
+      // if (map.isSolidTileAtXY(hero.y,right)) {
+      //   hero.x += 32;
+      //   camera.x += 32;
+      // }
+    }
+  }
+
   function runGameState() {
     currentGameStateFunction();
   }
-
+//change the song based on the game state
   function musicChange() {
     if (musicState !== currentGameState) {
       musicState = currentGameState;
@@ -340,7 +395,6 @@ function startCanvas() {
     let now = Date.now();
     let delta = now - then;
     update(delta/1000);
-
 
     then = now;
 
