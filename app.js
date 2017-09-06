@@ -1,9 +1,11 @@
+
 //start canvas!
 startCanvas();
 
 function startCanvas() {
   let sound = document.getElementById('audio')
   sound.src = 'assets/Title.mp3'
+
   //grab canvas and set context as 2d
   let canvas = document.getElementById('canvas');
   let ctx = canvas.getContext('2d');
@@ -12,9 +14,6 @@ function startCanvas() {
   let currentGameState = 0;
   let currentGameStateFunction = null;
   let musicState = currentGameState;
-
-  let next = 0;
-  let current = 0;
 
   //Set the game states
   const GAME_STATE_TITLE = 0;
@@ -59,19 +58,23 @@ function startCanvas() {
 
   let update = function(input) {
     if (38 in keysDown) { //UP
-      hero.y -= hero.speed*input;
+      hero.y -= Math.floor((hero.speed*input));
+      camera.move(38,input);
       heroImage.src = backward;
     }
     if (40 in keysDown) { //DOWN
-      hero.y += hero.speed*input;
+      hero.y += Math.floor((hero.speed*input));
+      camera.move(40,input);
       heroImage.src = forward;
     }
     if (37 in keysDown) { //LEFT
-      hero.x -= hero.speed*input;
+      hero.x -= Math.floor((hero.speed*input));
+      camera.move(37,input);
       heroImage.src = left;
     }
     if (39 in keysDown) { //RIGHT
-      hero.x += hero.speed*input;
+      hero.x += Math.floor((hero.speed*input));
+      camera.move(39,input);
       heroImage.src = right;
     }
   }
@@ -93,7 +96,7 @@ function startCanvas() {
 
     //advance to new game state when space is pressed
     if (32 in keysDown) {
-      ctx.clearRect(0,0,832,512);
+      ctx.clearRect(0,0,608,608);
       switchGameState(GAME_STATE_PLAY_LEVEL);
     }
   }
@@ -108,43 +111,59 @@ function startCanvas() {
     console.log(currentGameState);
   }
 
+  //the tile map array
   let map = {
-      cols: 28,
-      rows: 17,
+      cols: 32,
+      rows: 32,
       tileSize: 32,
       tiles: [
-      0,0,0,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,5,5,0,0,0,
-      0,0,0,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,5,5,0,0,0,
-      0,0,0,5,5,1,2,1,3,1,2,3,0,8,7,0,1,1,1,2,1,3,1,5,5,0,0,0,
-      0,0,0,5,5,1,0,0,0,0,0,0,0,7,8,0,0,0,0,0,0,0,2,5,5,0,0,0,
-      0,0,0,5,5,3,0,0,0,0,0,0,0,8,7,0,0,0,0,0,0,0,1,5,5,0,0,0,
-      0,0,0,5,5,1,0,0,0,0,0,0,0,7,8,0,0,0,0,0,0,0,1,5,5,0,0,0,
-      0,0,0,5,5,1,0,0,0,0,0,0,0,8,7,0,0,0,0,0,0,0,1,5,5,0,0,0,
-      0,0,0,5,5,1,0,0,0,0,0,0,0,7,8,0,0,0,0,0,0,0,3,5,5,0,0,0,
-      0,0,0,5,5,2,0,0,0,0,0,0,0,8,7,0,0,0,0,0,0,0,2,5,5,0,0,0,
-      0,0,0,5,5,1,0,0,0,0,0,0,0,7,8,0,0,0,0,0,0,0,3,5,5,0,0,0,
-      0,0,0,5,5,1,0,0,0,0,0,0,0,8,7,0,0,0,0,0,0,0,1,5,5,0,0,0,
-      0,0,0,5,5,1,0,0,0,0,0,0,0,7,8,0,0,0,0,0,0,0,1,5,5,0,0,0,
-      0,0,0,5,5,3,0,0,0,0,0,0,0,8,7,0,0,0,0,0,0,0,3,5,5,0,0,0,
-      0,0,0,5,5,5,5,5,0,0,0,0,0,7,0,0,0,0,0,0,5,5,5,5,5,0,0,0,
-      0,0,0,6,6,6,6,6,0,0,0,0,0,8,0,0,0,0,0,0,6,6,6,6,6,0,0,0,
-      0,0,0,6,6,6,6,6,0,0,0,0,0,0,8,0,0,0,0,0,6,6,6,6,6,0,0,0,
-      0,0,0,6,6,6,6,6,0,0,0,0,0,0,0,0,0,0,0,0,6,6,6,6,6,0,0,0
+      5,5,5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,5,5,5,5,5,5,5,5,5,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,1,1,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
+      5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,5,5,5,5,5,5
     ],
+
     getTile: function(col, row) {
-      return this.tiles[row*map.cols +col]
+      //console.log(col,row);
+      // 13 , 8
+      return this.tiles[row*map.cols+col]
     },
-    isSolidTileAtXY: function(x,y) {
-      let col = Math.floor(x/this.tileSize);
-      let row = Math.floor(y/this.tileSize);
+    isSolidTileAtXY: function (x,y) {
+      let col = Math.floor(x/map.tileSize);
+      let row = Math.floor(y/map.tileSize);
 
-      //4,5,6 are solid/not walkable
-
-      return this.tiles.reduce(function(res,tile,index) {
-        let cell = this.getTile(col,row);
-        let isSolid = cell === 4 || cell === 5 || cell === 6;
-        return res || isSolid;
-      }).bind(this), false;
+      //tiles 4,5,6 are solid/impassable, loop and return true if solid
+      let tile = this.getTile(col,row);
+      let isSolid = tile === 4 || tile === 5 || tile === 6;
+      return isSolid;
     },
     getCol: function(x) {
       return Math.floor(x/this.tileSize);
@@ -155,7 +174,7 @@ function startCanvas() {
     getX: function(col) {
       return col * this.tileSize;
     },
-    getY: function(row) {
+    getY:function(row) {
       return row * this.tileSize;
     }
   };
@@ -165,34 +184,43 @@ function startCanvas() {
   heroImage.onload = function() {
     heroReady = true;
   }
-
+  //hero images
   let forward = 'assets/Hero_Forward.png';
   let backward = 'assets/Hero_Backward.png'
   let left = 'assets/Hero_Left.png';
   let right = 'assets/Hero_Right.png';
   heroImage.src = forward;
 
+  //hero object
   let hero = {
-    speed: 120,
-    x: (canvas.width/2)-32,
-    y: (canvas.height/3.5)-32,
+    speed: 128,
+    horiz: Math.floor((canvas.width/2)-32),
+    vert: Math.floor((canvas.height/2)-32),
+    x: Math.floor((26/2)*32),
+    y: Math.floor((16/2)*32),
     width: 64,
-    height: 64
+    height: 64,
   };
 
+  //renders the hero animations
+  let next = 0;
+  let current = 0;
+
   let heroRender = function() {
+    //console.log('hero x', hero.x);
+    //console.log('hero y', hero.y);
     if (heroReady) {
-      let heroW = 64
-      let heroH = 64;
       let totalFrames = 9;
 
-      //ctx.clearRect(0,0,832,512);
-      ctx.drawImage(heroImage,next,0,heroW,heroH,hero.x,hero.y,heroW,heroH);
+      //draws the hero using the current image
+      ctx.drawImage(heroImage,next,0,hero.width,hero.height,hero.horiz,hero.vert,hero.width,hero.height);
 
+      //moves through the sequence of images to animate her motions
       if (38 in keysDown || 40 in keysDown || 37 in keysDown || 39 in keysDown) {
-        next += heroW;
+        next += hero.width;
       }
 
+      //resets to beginning of animation when the last frame is reached
       if (current == totalFrames) {
         next = 0;
         current = 0;
@@ -208,26 +236,75 @@ function startCanvas() {
     tilesReady = true;
   }
 
+//renders the tile map
   function mapRender() {
     if (tilesReady) {
-      for (var c = 0; c < map.cols; c++) {
-        for (var r = 0; r < map.rows; r++) {
+
+      //camera extent parameters
+      let startCol = Math.floor(camera.x / map.tileSize);
+      let endCol = startCol + (camera.width/map.tileSize);
+      let startRow = Math.floor(camera.y/map.tileSize);
+      let endRow = startRow + (camera.height/map.tileSize);
+       let offsetX = -camera.x + startCol * map.tileSize;
+       let offsetY = -camera.y + startRow * map.tileSize;
+
+      for (var c = startCol; c <= endCol; c++) {
+        for (var r = startRow; r <= endRow; r++) {
           let tile = map.getTile(c,r);
-          if (tile !== '0') {
+          //console.log(c,r,tile);
+          let x = (c - startCol) * map.tileSize + offsetX;
+          let y = (r - startRow) * map.tileSize + offsetY;
+          if (tile !== 0) {
             ctx.drawImage(
               tileImg, //Image
               (tile -1) * map.tileSize, //source x
               0, //source y
               map.tileSize, //source width
               map.tileSize, //source height
-              c * map.tileSize, //target x
-              r * map.tileSize, //target y
+              // c * map.tileSize,
+              Math.round(x), //target x
+              // r * map.tileSize,
+              Math.round(y), //target y
               map.tileSize, //target width
               map.tileSize //target height
             );
           }
         }
       }
+
+    }
+  }
+
+  let camera = {
+    speed: 128,
+    x: 0,
+    y: 0,
+    width: canvas.width,
+    height: canvas.height,
+    maxX: map.rows * map.tileSize - canvas.width,
+    maxY: map.rows * map.tileSize - canvas.height,
+    move: function(key, input) {
+      if (key == 38) { //UP
+        this.y -= Math.floor(camera.speed*input);
+      }
+      if (key == 40) { //DOWN
+        this.y += Math.floor(camera.speed*input);
+      }
+      if (key == 37) { //LEFT
+        this.x -= Math.floor(camera.speed*input);
+      }
+      if (key == 39) { //RIGHT
+        this.x += Math.floor(camera.speed*input);
+      }
+      console.log('camera x',camera.x/32);
+      console.log('camera y',camera.y/32);
+
+      let col = Math.floor(hero.x/32);
+      let row = Math.floor(hero.y/32);
+      console.log('hero x', col);
+      console.log('hero y', row );
+
+      console.log('the tile is ' + map.getTile(col,row));
     }
   }
 
@@ -248,15 +325,15 @@ function startCanvas() {
           sound.src = 'assets/MainGame.mp3';
           break;
 
-        case GAME_STATE_GAME_OVER:
-          console.log('no music yet');
+        case 2:
+          //NO GAMEOVER YET
           break;
       }
       sound.load();
       sound.play();
     }
   }
-
+//main game loop
   let main = function() {
     runGameState();
     musicChange();

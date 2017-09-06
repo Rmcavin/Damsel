@@ -15,4 +15,5 @@
 canvas {
   border: 1px solid black;
   background-position: center;
+  background-repeat: no-repeat;
 }
