@@ -1,12 +1,9 @@
-//TODO FOR TOMORROW
-//input diverse textures. there are 32 columns, for each number, say 37, divide by 32, so it is in the second row.
-//y = 1*32 (it is zero in first row)
-//now do 37%32, getting 5. This is the position in the row of that value.
-//x = 5*32 = 160px.
+
 //start canvas!
 startCanvas();
 
 function startCanvas() {
+  //set start screen music
   let sound = document.getElementById('audio')
   sound.src = 'assets/Title.mp3'
 
@@ -28,7 +25,8 @@ function startCanvas() {
   function switchGameState(newState) {
     currentGameState = newState;
     switch (currentGameState) {
-
+      //when the game state is updated,
+      //execute the corresponding function
       case GAME_STATE_TITLE:
         currentGameStateFunction = gameStateTitle;
         break;
@@ -62,7 +60,6 @@ function startCanvas() {
 
   function gameStateTitle() {
     canvas.style.background = "url('assets/background_intro.png')";
-
     ctx.textBaseline = 'top';
     ctx.textAlign = "center";
     ctx.fillStyle = '#FFE4E1';
@@ -83,6 +80,7 @@ function startCanvas() {
   }
 
   function gameStatePlayLevel() {
+    //render the game, map render is called by layer
     canvas.style.background = "";
     mapRender(0);
     mapRender(1);
@@ -132,64 +130,64 @@ function startCanvas() {
       119,119,119,119,119,119,119,119,119,119,119,119,119,119,119,484,486,119,119,119,119,119,119,119,119,119,119,119,119,119,119,119,
       119,119,119,119,119,119,119,119,119,119,119,119,119,119,119,484,486,119,119,119,119,119,119,119,119,119,119,119,119,119,119,119,
       1399,1400,1398,1400,1399,1399,182,1400,1399,1400,1398,182,1400,1399,119,484,486,119,1400,1398,1400,1399,1399,182,1400,1399,1400,1398,182,1400,1399,1400
+      ],
+      [ //everything on the terrain
+      0,0,0,0,817,818,819,901,781,782,781,782,781,782,781,782,781,782,901,817,818,819,0,0,0,0,0,0,0,0,0,0,
+      1877,1878,1878,1878,849,850,851,933,813,814,813,814,813,814,813,814,813,814,933,849,850,851,1878,1878,1878,1878,1878,1878,1878,1878,1878,1879,
+      1909,0,0,409,881,882,883,965,845,846,845,846,845,846,845,846,845,846,965,881,882,883,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,441,913,914,915,997,877,878,877,878,877,878,877,878,877,878,997,913,914,915,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,473,945,946,947,901,905,906,907,908,902,903,905,906,907,908,901,945,946,947,0,0,0,0,0,0,0,0,0,1911,
+      1909,409,410,411,977,978,979,933,937,938,939,940,934,935,937,938,939,940,933,977,978,979,409,410,411,0,0,0,0,0,0,1911,
+      1909,441,442,443,945,946,947,965,969,970,971,972,966,967,969,970,971,972,965,945,946,947,441,442,443,0,0,0,0,0,0,1911,
+      1909,473,474,475,977,978,979,997,1001,1002,1003,1004,998,999,1001,1002,1003,1004,997,977,978,979,473,474,475,0,0,0,0,0,0,1911,
+      1909,0,0,0,1009,1010,1011,0,0,0,0,0,0,0,0,0,0,0,0,1009,1010,1011,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1714,1715,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
+      1941,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1746,1747,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1943
+      ]],
+      //gets the tile value from an array index
+      getTile: function(layer, col, row) {
+        //1 is the layer over terrain
+        return this.layers[layer][row*map.cols+col]
+      },
+      isSolidTileAtXY: function (x,y) {
+        let col = Math.floor(x/map.tileSize);
+        let row = Math.floor(y/map.tileSize);
 
-    ],
-    [ //everything on the terrain
-    0,0,0,0,817,818,819,901,781,782,781,782,781,782,781,782,781,782,901,817,818,819,0,0,0,0,0,0,0,0,0,0,
-    1877,1878,1878,1878,849,850,851,933,813,814,813,814,813,814,813,814,813,814,933,849,850,851,1878,1878,1878,1878,1878,1878,1878,1878,1878,1879,
-    1909,0,0,409,881,882,883,965,845,846,845,846,845,846,845,846,845,846,965,881,882,883,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,441,913,914,915,997,877,878,877,878,877,878,877,878,877,878,997,913,914,915,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,473,945,946,947,901,905,906,907,908,902,903,905,906,907,908,901,945,946,947,0,0,0,0,0,0,0,0,0,1911,
-    1909,409,410,411,977,978,979,933,937,938,939,940,934,935,937,938,939,940,933,977,978,979,409,410,411,0,0,0,0,0,0,1911,
-    1909,441,442,443,945,946,947,965,969,970,971,972,966,967,969,970,971,972,965,945,946,947,441,442,443,0,0,0,0,0,0,1911,
-    1909,473,474,475,977,978,979,997,1001,1002,1003,1004,998,999,1001,1002,1003,1004,997,977,978,979,473,474,475,0,0,0,0,0,0,1911,
-    1909,0,0,0,1009,1010,1011,0,0,0,0,0,0,0,0,0,0,0,0,1009,1010,1011,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1909,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1714,1715,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1911,
-    1941,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1746,1747,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1942,1943
-  ]],
+        //0 is passable, all others are not.
+        let tile = this.getTile(1,col,row);
+        let isSolid = tile !== 0;
+        return isSolid;
+      },
+    };
 
-    getTile: function(layer, col, row) {
-      //1 is the layer over terrain
-      return this.layers[layer][row*map.cols+col]
-    },
-    isSolidTileAtXY: function (x,y) {
-      let col = Math.floor(x/map.tileSize);
-      let row = Math.floor(y/map.tileSize);
-
-      //tiles 4,5,6 are solid/impassable, loop and return true if solid
-      let tile = this.getTile(1,col,row);
-      let isSolid = tile !== 0;
-      return isSolid;
-    },
-  };
-
+  //ensure hero image asset is loaded and ready
   let heroReady = false;
   let heroImage = new Image();
   heroImage.onload = function() {
     heroReady = true;
   }
-  //hero images
+  //hero images based on direction, forward is default
   let forward = 'assets/Hero_Forward.png';
   let backward = 'assets/Hero_Backward.png'
   let left = 'assets/Hero_Left.png';
@@ -203,8 +201,6 @@ function startCanvas() {
     vert: Math.floor((canvas.height/2)-32),
     x: Math.floor((26/2)*32),
     y: Math.floor((16/2)*32),
-    //col: Math.floor(hero.x/32),
-    //row: Math.floor(hero.y/32),
     width: 64,
     height: 64,
   };
@@ -261,8 +257,8 @@ function startCanvas() {
       let offsetY = -camera.y + startRow * map.tileSize;
 
       //iterate through and draw the map tiles
-      for (var c = startCol; c <= endCol; c++) {
-        for (var r = startRow; r <= endRow; r++) {
+      for (let c = startCol; c <= endCol; c++) {
+        for (let r = startRow; r <= endRow; r++) {
           let tile = map.getTile(layer,c,r);
 
           //get tile in Image
@@ -277,9 +273,7 @@ function startCanvas() {
               imgRow * map.tileSize, //source y
               map.tileSize, //source width
               map.tileSize, //source height
-              // c * map.tileSize,
               Math.round(x), //target x
-              // r * map.tileSize,
               Math.round(y), //target y
               map.tileSize, //target width
               map.tileSize //target height
@@ -290,6 +284,7 @@ function startCanvas() {
     }
   }
 
+  //camera object
   let camera = {
     speed: 128,
     x: 0,
@@ -298,6 +293,7 @@ function startCanvas() {
     height: canvas.height,
     maxX: map.rows * map.tileSize - canvas.width,
     maxY: map.rows * map.tileSize - canvas.height,
+    //moves the camera similarly to the hero
     move: function(key, input) {
       if (key == 38) { //UP
         this.y -= Math.floor(camera.speed*input);
@@ -311,12 +307,12 @@ function startCanvas() {
       if (key == 39) { //RIGHT
         this.x += Math.floor(camera.speed*input);
       }
-
       let col = Math.floor(hero.x/32);
       let row = Math.floor(hero.y/32);
     }
   }
 
+  //look for collisions in direction of travel
   function checkCollision(key) {
     let up = hero.y - 32;
     let down = hero.y + 32;
@@ -324,33 +320,19 @@ function startCanvas() {
     let left = hero.x - 32;
 
     if (key == 38) { //UP
-
       return map.isSolidTileAtXY(hero.x,up);
-      // if (map.isSolidTileAtXY(hero.x,up)) {
-        // hero.y -= 32;
-        // camera.y -= 32;
-      //}
     }
+
     if (key == 40) { //DOWN
       return map.isSolidTileAtXY(hero.x,down);
-      // if (map.isSolidTileAtXY(hero.x,down)) {
-      //   hero.y += 32;
-      //   camera.y += 32;
-      // }
     }
+
     if (key == 37) { //LEFT
       return map.isSolidTileAtXY(left,hero.y+16);
-      // if (map.isSolidTileAtXY(hero.y,left)) {
-      //   hero.x -= 32;
-      //   camera.x -= 32;
-      // }
     }
+
     if (key == 39) { //RIGHT
       return map.isSolidTileAtXY(right,hero.y+16);
-      // if (map.isSolidTileAtXY(hero.y,right)) {
-      //   hero.x += 32;
-      //   camera.x += 32;
-      // }
     }
   }
 
@@ -391,7 +373,7 @@ function startCanvas() {
         }
       }
     }
-
+//run the correct game state function
   function runGameState() {
     currentGameStateFunction();
   }
@@ -427,9 +409,9 @@ function startCanvas() {
 
     then = now;
 
-    //do again asap
+    //do again asap for animations
     let w = window;
-    let fps = 20;
+    let fps = 20; //variable to help limit frequency/debounce requestAnimationFrame execution.
     function draw() {
         setTimeout(function() {
           requestAnimationFrame = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.msRequestAnimationFrame || w.mozRequestAnimationFrame;
